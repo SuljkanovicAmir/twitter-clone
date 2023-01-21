@@ -1,25 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import './assets/styles/App.css';
+import './assets/styles/Login.css'
+import LoginAndSignUp from './components/LoginAndSignUp/LoginAndSignUp';
+import Navigation from './components/Navigation';
+import Main from './components/Main';
+import { useState, useEffect } from 'react';
+import { LoginContext } from './contexts/LoginContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import PrivateRoute from './utilities/PrivateRoute';
+import HomePage from './components/HomePage';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+        < Route path='/LoginOrSignUp' element={<LoginAndSignUp />} />
+        <Route
+            path='/'
+            element={
+              <PrivateRoute>
+                <Main />
+              </PrivateRoute>
+            }>
+            <Route  path="/" element={<HomePage />} />
+            <Route  path="/home" element={<HomePage />} />
+            <Route  path="/profile" element={<ProfilePage />} />
+          
+          </Route>
+        </Routes>
+      </Router>
+          
+    </AuthProvider>
   );
 }
 
 export default App;
+
+
+
+
