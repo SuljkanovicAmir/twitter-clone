@@ -9,7 +9,7 @@ function YearOfBirth () {
 
 function DayOfBirth () {
     let days = []
-    for(let i = 1; i < 25; i++) {
+    for(let i = 1; i < 32; i++) {
         days.push(i)
     }
 

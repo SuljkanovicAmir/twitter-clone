@@ -1,10 +1,7 @@
-import { signInWithEmailAndPassword } from 'firebase/auth'
 import React from 'react'
-import { auth } from '../../firebase/index'
-import { useContext, useState, useCallback } from 'react'
-import { withContext} from 'react-router-dom'
+import { useContext, useState, useEffect } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
-import {Route, useNavigate , Routes } from 'react-router-dom'
+import { useNavigate  } from 'react-router-dom'
 
 
 
@@ -33,11 +30,14 @@ function LoginPage({ setNeedLogin }) {
 
 
   const {currentUser} = useContext(AuthContext) 
-  if (currentUser) {
-    return navigate("/LoginOrSignUp");
-  }
 
 
+  useEffect(() => {
+    if (currentUser) {
+       navigate("/LoginOrSignUp");
+    }
+  
+  }, []);
    
   return (
     <>

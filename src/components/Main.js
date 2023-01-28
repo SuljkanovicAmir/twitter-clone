@@ -4,6 +4,8 @@ import Sidebar from './Sidebar'
 import Navigation from './Navigation'
 
 function Main() {
+
+
   return (
    <div className='logged-in'>
       <Navigation />

@@ -1,10 +1,7 @@
 import './assets/styles/App.css';
 import './assets/styles/Login.css'
 import LoginAndSignUp from './components/LoginAndSignUp/LoginAndSignUp';
-import Navigation from './components/Navigation';
 import Main from './components/Main';
-import { useState, useEffect } from 'react';
-import { LoginContext } from './contexts/LoginContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
 import PrivateRoute from './utilities/PrivateRoute';
