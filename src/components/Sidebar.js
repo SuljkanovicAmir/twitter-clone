@@ -21,12 +21,12 @@ function Sidebar() {
             </div>
             <div className='sidebar-previous-images'>
                 <div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmikF8LXEAEq9iT?format=jpg&name=240x240)` }}></div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmikGkdWIAMcOPp?format=jpg&name=240x240)` }}></div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmdikH0X0AU7IGW?format=jpg&name=240x240)` }}></div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmbEBnTXgAE3zRu?format=jpg&name=240x240)` }}></div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/Fl3vtcuWAAA1TRE?format=jpg&name=240x240)` }}></div>
-                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FkvBTtXWIAEAcsO?format=jpg&name=120x120)` }}></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
                 </div>
             </div>
             <div className='sidebar-might-know'>
@@ -112,3 +112,11 @@ export default Sidebar
 
 
 
+    /*
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmikF8LXEAEq9iT?format=jpg&name=240x240)` }}></div>
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmikGkdWIAMcOPp?format=jpg&name=240x240)` }}></div>
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmdikH0X0AU7IGW?format=jpg&name=240x240)` }}></div>
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FmbEBnTXgAE3zRu?format=jpg&name=240x240)` }}></div>
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/Fl3vtcuWAAA1TRE?format=jpg&name=240x240)` }}></div>
+                    <div style={{ backgroundImage: `url(https://pbs.twimg.com/media/FkvBTtXWIAEAcsO?format=jpg&name=120x120)` }}></div>
+                */

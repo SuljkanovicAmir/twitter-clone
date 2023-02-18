@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import TwitterIcon from '../assets/images/twitter.jpg'
 import HomeIcon from '../assets/images/home.svg'
 import ExploreIcon from '../assets/images/explore.svg'
@@ -8,20 +8,25 @@ import BookmarksIcon from '../assets/images/bookmarks.svg'
 import ListsIcon from '../assets/images/lists.svg'
 import ProfileIcon from '../assets/images/profile.svg'
 import MoreIcon from '../assets/images/more.svg'
-import Dots from '../assets/images/dots.svg'
-import Avatar from '../assets/images/avatar.jpg'
-import LockIcon from '../assets/images/profile-info-icons/lock.svg'
-import TweetForm from './TweetForm'
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/index'
 import { NavLink } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext'
+import CreateTweet from './reusable/CreateTweet'
+import { useNavigate  } from 'react-router-dom'
+import NavProfile from './reusable/NavProfile'
+
+
 
 function Navigation() {
 
   const [isActive, setActive] = useState(false)
+  const { userAt, currentUser } = useContext(AuthContext)
+  let navigate = useNavigate();
 
   const signout = async () => {
     await signOut(auth)
+    navigate("/LoginOrSignUp");
   }
 
   return (
@@ -33,22 +38,23 @@ function Navigation() {
             <img src={TwitterIcon} alt="twitter icon" />
           </div>
           <nav>
-            <NavLink to='/home'>
             <li>
-              <div className="notif-icons">
-                <div>
-                  <img src={HomeIcon} alt="notif icon" />
+              <NavLink to='/home'>
+                <div className="notif-icons">
+                  <div>
+                    <img src={HomeIcon} alt="notif icon" />
+                  </div>
+                  <span>Home</span>
                 </div>
-                Home
-              </div>
+              </NavLink>
             </li>
-            </NavLink>
+           
             <li>
               <div className="notif-icons">
                 <div>
                   <img src={ExploreIcon} alt="notif icon" />
                 </div>
-                Explore
+                <span>Explore</span>
               </div>
             </li>
             <li>
@@ -56,7 +62,7 @@ function Navigation() {
                 <div>
                   <img src={NotifIcon} alt="notif icon" />
                 </div>
-                Notifications
+                <span>Notifications</span>
               </div>
             </li>
             <li>
@@ -64,7 +70,7 @@ function Navigation() {
                 <div>
                   <img src={MessagesIcon} alt="notif icon" />
                 </div>
-                Messages
+                <span>Messages</span>
               </div>
             </li>
             <li>
@@ -72,7 +78,7 @@ function Navigation() {
                 <div>
                   <img src={BookmarksIcon} alt="notif icon" />
                 </div>
-                Bookmarks
+                <span>Bookmarks</span>
               </div>
             </li>
             <li>
@@ -80,64 +86,49 @@ function Navigation() {
                 <div>
                   <img src={ListsIcon} alt="notif icon" />
                 </div>
-                Lists
+                <span>Lists</span>
               </div>
-            </li>
-            <NavLink to='/profile'>
+            </li> 
             <li>
+            <NavLink to={`/${userAt}`}>
               <div className="notif-icons">
                 <div>
                   <img src={ProfileIcon} alt="notif icon" />
                 </div>
-                Profile
+                <span>Profile</span>
               </div>
+              </NavLink>
             </li>
-            </NavLink>
+            
             <li>
               <div className="notif-icons">
                 <div>
                   <img src={MoreIcon} alt="notif icon" />
                 </div>
-                More
+                <span>More</span>
               </div>
             </li>
             <li>
-              <div className="notif-icons" onClick={signout}>
+              <div className="notif-icons" onClick={() => signout()}>
                 <div>
                   <img src={MoreIcon} alt="notif icon" />
                 </div>
-                Sign Out
+                <span>Sign Out</span>
               </div>
             </li>
           </nav>
           <div className="tweet-btn">
             <button onClick={() => setActive(true)}>Tweet</button>
           </div>
-          <div className="nav-acc-name">
-            <div className='avatar'>
-                <img src={Avatar} alt='icon'/>
-            </div>
-            <div>
-                <div className='nav-acc-nickname'>
-                    amir 
-                    <img src={LockIcon} alt='locked acc' />
-                </div>
-                <div className='nav-username'>
-                    @_introvertedaf
-                </div>
-            </div>
-            <div className='nav-acc-dots'>
-                <img src={Dots} alt='dots' />
-            </div>
-          </div>
+          <NavProfile />
         </div>
       </div>
     </div>
     <div className={isActive ? 'tweet-form-status' : 'tweet-form-status hidden'}>
        <div className='tweet-form-div'>
-        <TweetForm setActive={setActive} />
+        <CreateTweet setActive={setActive} />
       </div>
-        <div className='backdrop window'></div>
+      <div className='tf-backdrop'></div>
     </div>
    
     

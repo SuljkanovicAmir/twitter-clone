@@ -36,11 +36,11 @@ function LoginAndSignUp() {
         <footer className="login-footer">
           <div className="login-empty"></div>
           <div className="footer-div">
-            <div>
+            <div className='footer-text'>
               <h2>Don't miss what's happening</h2>
               <h3>People on Twitter are the first to know.</h3>
             </div>
-            <div>
+            <div className='footer-btns'>
               <button onClick={() => setNeedLogin(true)}>Login</button>
               <button onClick={() => setNeedLogin(false)}>Sign Up</button>
             </div>

@@ -1,10 +1,11 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect, useContext} from 'react'
 import Close from '../../assets/images/close.svg'
 import { YearOfBirth, DayOfBirth } from '../../utilities/DateOfBirth'
 import { useNavigate } from 'react-router-dom'
-import { setDoc, doc} from "firebase/firestore";
+import { setDoc, doc, onSnapshot} from "firebase/firestore";
 import { auth, db } from '../../firebase/index'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const days = DayOfBirth()
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -21,6 +22,20 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
   const [monthOfBirth, setMonthOfBirth] = useState('')
   const [yearOfBirth, setYearOfBirth] = useState('')
   const [userAt, setUserAt] = useState("");
+	const [allAts, setAllAts] = useState([]);
+
+  const {usersRef} = useContext(AuthContext);
+
+
+	// on pageload, grab all the usernames, to be sure they're unique.
+  useEffect(() => {
+		let tempArray = [];
+    onSnapshot(doc(usersRef), (doc) => {
+      console.log(doc.data().at)
+      tempArray.push(doc.data().at);
+    });
+    setAllAts(tempArray)
+	}, []);
 
 
   const handleSignUp = (e) => {
@@ -29,7 +44,7 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
 			createUserWithEmailAndPassword(auth, registerEmail, registerPassword)
       .then((cred) => {
         setDoc(doc(db, 'users', cred.user.uid), {
-            name: name,
+            name: userAt,
             bio: '',
             dayOfBirth,
             monthOfBirth,
@@ -39,7 +54,7 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
             follows: [cred.user.uid],
             followers: [cred.user.uid],
             joinDate: new Date(),
-            at: userAt,
+            at:`${userAt}`,
           })
           .then(() => {
             navigate('/')
@@ -48,6 +63,8 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
   };
 
 
+
+  
 
   return (
     <div className={signUpFormActive ? 'sign-up-form-div active' : 'sign-up-form-div'}>
@@ -61,7 +78,7 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
         <div className='signup-form'>
             <h1 className='sign-title'> Create your account </h1>
             <div className='signup-name-email'>
-              <input type="text" placeholder='Name' onChange={(e) => setName(e.target.value)} required/>
+              <input type="text" required placeholder='Username' onChange={(e) => setUserAt(e.target.value)} />
               <input type="text" placeholder='Email' onChange={(e) => setRegisterEmail(e.target.value)}/>
               <input type="password" placeholder='Password' onChange={(e) => setRegisterPassword(e.target.value)}/>
             </div>
@@ -99,7 +116,7 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
                 
               </div>
             </div>
-            <button className='signup-btn' onClick={(e) => handleSignUp(e)}>Sign up</button>
+            <button className='signup-btn'  disabled={!userAt} onClick={(e) => handleSignUp(e)}>Sign up</button>
         </div>
     </div>
     

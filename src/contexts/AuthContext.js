@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, createContext } from "react";
 import {
     createUserWithEmailAndPassword,
@@ -5,10 +6,11 @@ import {
     signOut,
     onAuthStateChanged,
   } from 'firebase/auth';
-import { db } from "../firebase/index";
-import { auth } from '../firebase/index'
-import { collection, query, where, onSnapshot, documentId, updateDoc } from "firebase/firestore";
-
+import { db, storage, auth } from "../firebase/index";
+import { collection, onSnapshot, doc } from "firebase/firestore";
+import LoadingScreen from "../components/reusable/LoadingScreen";
+import { getDownloadURL, ref } from 'firebase/storage';
+import BirthdayIcon from '../assets/images/profile-info-icons/birthday.svg'
 
 export const AuthContext = createContext();
 
@@ -16,10 +18,11 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     const [currentUser, setCurrentUser] = useState(null)
+    const [userID, setUserID] = useState(null);
     const [pending, setPending] = useState(true);
     const [userData, setUserData] = useState({});
     const usersRef = collection(db, 'users');
-
+   
 
     const signIn = (email, password) =>  {
         return signInWithEmailAndPassword(auth, email, password)
@@ -35,40 +38,103 @@ export const AuthProvider = ({ children }) => {
     }
 
     
-    
-
     useEffect(() => {
-       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        setCurrentUser(currentUser)
-       
-            if (currentUser) { 
-                const q = query(usersRef, where(documentId(), "==", `${currentUser.uid}`));
-                onSnapshot(q, (querySnapshot) => {
-                    const items = []
-                    querySnapshot.docs.forEach((doc) => {
-                        let data = doc.data()
-                        items.push(data);
-                    },
-                    (err) => console.log(err)
-                );
-                setUserData(items);
-                });
-           }
-        });
-        setPending(false)
-        return () => {
-            unsubscribe()
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          setCurrentUser(currentUser);
+          setUserID(currentUser.uid);
+          onSnapshot(doc(usersRef, currentUser.uid), (doc) => {
+            let data = doc.data();
+            setTimeout(() => {
+              setPending(false);
+            }, 200);
+            setUserData((u) => ({
+                ...u,
+                joinDate: data.joinDate,
+                bio: data.bio || "",
+                retweets: data.retweets || [],
+                likes: data.likes || [],
+                tweets: data.tweets || [],
+                followers: data.followers || [],
+                follows: data.follows || [],
+                at: data.at,
+                name: data.name,
+                website: data.website,
+                dayOfBirth: data.dayOfBirth,
+                monthOfBirth: data.monthOfBirth,
+                yearOfBirth: data.yearOfBirth,
+            }));
+          });
+          const storageAvatarRef = ref(
+            storage,
+            "avatars/" + currentUser.uid + ".png"
+          );
+          getDownloadURL(storageAvatarRef)
+            .then((url) => {
+              setUserData((u) => ({ ...u, image: url }));
+            })
+            .catch(() => {
+              console.log("set image again");
+              setUserData((u) => ({ ...u, image: BirthdayIcon }));
+            });
+
+            const storageHeaderRef = ref(storage, "headers/" + currentUser.uid + '.png')
+
+            getDownloadURL(storageHeaderRef)
+            .then((url) => {
+              setUserData((u) => ({ ...u, header: url }));
+            })
+            .catch(() => {
+              console.log("set image again");
+              setUserData((u) => ({ ...u, header: BirthdayIcon }));
+            });
+        } else {
+          setTimeout(() => {
+            setPending(false);
+          }, 200);
         }
-        }, []);
+      });
 
-        if(pending){
-            return <>Loading...</>
-          }
+      return () => {
+        unsubscribe();
+      };
+    }, []);
 
-          
+    if (pending) {
+      return <LoadingScreen />;
+    }
+
+        
     return (
-        <AuthContext.Provider value={{ createUser, currentUser, logout, signIn, userData, usersRef}}> 
+        <AuthContext.Provider value={{	
+                                    userAt: userData.at, 
+                                    userImage: userData.image,
+                                    userHeader: userData.header,
+                                    userName: userData.name, 
+                                    userFollows: userData.follows,
+                                    userFollowers: userData.followers,
+                                    userTweets: userData.tweets,
+                                    userLikes: userData.likes,
+                                    userBio: userData.bio,
+                                    userJoinDate: userData.joinDate,
+                                    userBornDay: userData.dayOfBirth,
+                                    userBornMonth: userData.monthOfBirth,
+                                    userBornYear: userData.yearOfBirth,
+                                    userWebsite: userData.website,
+                                    createUser, 
+                                    currentUser, 
+                                    logout, 
+                                    signIn, 
+                                    userData, 
+                                    usersRef, 
+                                    pending, 
+                                    setPending,
+                                    userID
+                                    }}> 
             {children}
         </AuthContext.Provider>
     );
 };
+
+
+

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../../contexts/AuthContext'
 import { useNavigate  } from 'react-router-dom'
 
@@ -28,16 +28,6 @@ function LoginPage({ setNeedLogin }) {
 
 
 
-
-  const {currentUser} = useContext(AuthContext) 
-
-
-  useEffect(() => {
-    if (currentUser) {
-       navigate("/LoginOrSignUp");
-    }
-  
-  }, []);
    
   return (
     <>

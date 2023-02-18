@@ -1,17 +1,20 @@
-import './assets/styles/App.css';
 import './assets/styles/Login.css'
+import './assets/styles/App.css';
 import LoginAndSignUp from './components/LoginAndSignUp/LoginAndSignUp';
 import Main from './components/Main';
-import { AuthProvider } from './contexts/AuthContext';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes, useParams } from "react-router-dom"
 import PrivateRoute from './utilities/PrivateRoute';
 import HomePage from './components/HomePage';
 import ProfilePage from './components/ProfilePage';
+import ProfileRoutes from './components/ProfileRoutes';
+import ProfileFollows from './components/ProfileFollows';
+
+
 
 function App() {
 
+
   return (
-    <AuthProvider>
       <Router>
         <Routes>
         < Route path='/LoginOrSignUp' element={<LoginAndSignUp />} />
@@ -24,13 +27,15 @@ function App() {
             }>
             <Route  path="/" element={<HomePage />} />
             <Route  path="/home" element={<HomePage />} />
-            <Route  path="/profile" element={<ProfilePage />} />
+            <Route  path="/:urlAt" element={<ProfileRoutes />}>
+                <Route path={`/:urlAt/following`} element={<ProfileFollows />} />
+                <Route path={`/:urlAt/followers`} element={<ProfileFollows />} />
+                <Route path={`/:urlAt`} element={<ProfilePage />} />
+            </Route>
           
           </Route>
         </Routes>
       </Router>
-          
-    </AuthProvider>
   );
 }
 
