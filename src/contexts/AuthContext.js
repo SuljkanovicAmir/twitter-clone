@@ -36,10 +36,10 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         return signOut(auth)
     }
+ 
 
-    
     useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           setCurrentUser(currentUser);
           setUserID(currentUser.uid);
@@ -64,11 +64,11 @@ export const AuthProvider = ({ children }) => {
                 monthOfBirth: data.monthOfBirth,
                 yearOfBirth: data.yearOfBirth,
             }));
-          });
-          const storageAvatarRef = ref(
-            storage,
-            "avatars/" + currentUser.uid + ".png"
+          }, (err) => console.log(err)
           );
+
+          const storageAvatarRef = ref(storage,"avatars/" + currentUser.uid + ".png");
+
           getDownloadURL(storageAvatarRef)
             .then((url) => {
               setUserData((u) => ({ ...u, image: url }));
@@ -78,16 +78,6 @@ export const AuthProvider = ({ children }) => {
               setUserData((u) => ({ ...u, image: BirthdayIcon }));
             });
 
-            const storageHeaderRef = ref(storage, "headers/" + currentUser.uid + '.png')
-
-            getDownloadURL(storageHeaderRef)
-            .then((url) => {
-              setUserData((u) => ({ ...u, header: url }));
-            })
-            .catch(() => {
-              console.log("set image again");
-              setUserData((u) => ({ ...u, header: BirthdayIcon }));
-            });
         } else {
           setTimeout(() => {
             setPending(false);
@@ -95,9 +85,7 @@ export const AuthProvider = ({ children }) => {
         }
       });
 
-      return () => {
-        unsubscribe();
-      };
+    
     }, []);
 
     if (pending) {
@@ -107,13 +95,14 @@ export const AuthProvider = ({ children }) => {
         
     return (
         <AuthContext.Provider value={{	
+                                    userID: userID,
                                     userAt: userData.at, 
                                     userImage: userData.image,
-                                    userHeader: userData.header,
                                     userName: userData.name, 
                                     userFollows: userData.follows,
                                     userFollowers: userData.followers,
                                     userTweets: userData.tweets,
+                                    userRetweets: userData.retweets,
                                     userLikes: userData.likes,
                                     userBio: userData.bio,
                                     userJoinDate: userData.joinDate,
@@ -124,12 +113,10 @@ export const AuthProvider = ({ children }) => {
                                     createUser, 
                                     currentUser, 
                                     logout, 
-                                    signIn, 
-                                    userData, 
+                                    signIn,  
                                     usersRef, 
                                     pending, 
                                     setPending,
-                                    userID
                                     }}> 
             {children}
         </AuthContext.Provider>

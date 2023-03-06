@@ -23,10 +23,12 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
   const [yearOfBirth, setYearOfBirth] = useState('')
   const [userAt, setUserAt] = useState("");
 	const [allAts, setAllAts] = useState([]);
-
+  const [error, setError] = useState("");
+  
   const {usersRef} = useContext(AuthContext);
 
 
+  /*
 	// on pageload, grab all the usernames, to be sure they're unique.
   useEffect(() => {
 		let tempArray = [];
@@ -36,7 +38,7 @@ function SignUpForm({ signUpFormActive, setSignupFormActive}) {
     });
     setAllAts(tempArray)
 	}, []);
-
+*/
 
   const handleSignUp = (e) => {
     e.preventDefault()

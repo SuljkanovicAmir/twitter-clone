@@ -18,16 +18,27 @@ import NavProfile from './reusable/NavProfile'
 
 
 
-function Navigation() {
+function Navigation({toast, setToast}) {
 
   const [isActive, setActive] = useState(false)
   const { userAt, currentUser } = useContext(AuthContext)
+  const [modal, setModal] = useState("");
+
   let navigate = useNavigate();
 
   const signout = async () => {
     await signOut(auth)
     navigate("/LoginOrSignUp");
   }
+
+  const toggle= (e) => {
+		if (e) {
+			e.stopPropagation();
+		}
+    setActive(false)
+	};
+
+
 
   return (
     <>
@@ -126,7 +137,7 @@ function Navigation() {
     </div>
     <div className={isActive ? 'tweet-form-status' : 'tweet-form-status hidden'}>
        <div className='tweet-form-div'>
-        <CreateTweet setActive={setActive} />
+        <CreateTweet setActive={setActive} toggle={toggle} modal={true} isActive={isActive} toast={toast} setToast={setToast}/>
       </div>
       <div className='tf-backdrop'></div>
     </div>

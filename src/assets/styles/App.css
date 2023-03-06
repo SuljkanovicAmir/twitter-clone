@@ -14,10 +14,12 @@
 }
 
 input,
+img,
 textarea,
 button,
 select,
-a {
+a,
+div {
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -25,7 +27,9 @@ a {
   color: unset;
 }
 
-
+.transparent {
+  visibility: hidden;
+}
 
 button {
   cursor: pointer;
@@ -127,7 +131,8 @@ body {
 }
 
 
-.nav-acc-name {
+.nav-acc-name,
+.account-card {
   margin-top: auto;
   display: flex;
   align-items: center;
@@ -187,6 +192,25 @@ body {
   color: #f1f1f1;
 }
 
+.toast {
+  position: fixed;
+	padding: 0.5rem 1rem;
+	margin-left: auto;
+	margin-right: auto;
+	line-height: 1.5;
+	border-radius: 3px;
+	bottom: 3.5rem;
+	left: 0;
+	right: 0;
+	width: fit-content;
+  background-color: #ff7a00;
+	opacity: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 555555;
+	color: white;
+}
 
 
 
@@ -408,7 +432,8 @@ body {
 
 
 
-.profile-nav {
+.profile-nav,
+.profile-follow-nav {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -418,12 +443,36 @@ body {
   font-weight: 500;
 }
 
-.profile-nav > :first-child {
+
+.profile-follow-nav a.active,
+.profile-nav a.active {
   color: white;
   font-weight: 700;
   font-size: 16px;
   color: rgb(231, 233, 234);
+}
 
+
+
+.profile-nav a .underline{
+  height: 4px;
+  background-color: rgb(255, 122, 0);
+  position: absolute;
+  bottom: 1px;
+  min-width: 47px;
+  border-radius: 50px;
+  display: none;
+}
+
+.profile-nav a.active > .underline.active {
+  display: flex;
+}
+
+.profile-nav a {
+  display: flex;
+    align-items: center;
+    min-width: 47px;
+    justify-content: center;
 }
 
 .profile-nav li {
@@ -437,9 +486,19 @@ body {
   cursor: pointer;
 }
 
+.profile-follow-nav a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: 53px;
+  color: rgb(113, 118, 123);
+  position: relative;
+  cursor: pointer;
+}
 
 
-.profile-nav-tweets > div,
+
 .orange-underline {
   height: 4px;
   background-color: rgb(255, 122, 0);
@@ -452,7 +511,21 @@ body {
 
 
 
+.tweet-loaded .active {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  padding-top: 200px;
+  align-items: flex-start;
+  background-color: black;
+}
 
+.tweet-loaded-screen {
+  display: none;
+}
 
 
 
@@ -462,6 +535,12 @@ body {
   height: 100%;
   border-bottom: 1px solid rgb(47, 51, 54);
 }
+.reply.tweet-div {
+  padding: 12px 16px 0px 16px;
+  display: flex;
+  height: unset;
+  border-bottom: unset;
+}
 
 .tweet-avatar {
   margin-right: 12px;
@@ -470,6 +549,9 @@ body {
   justify-content: flex-start;
 }
 
+.reply .tweet-avatar {
+  flex-direction: column;
+}
 
 .tweet-avatar img {
   height: 48px;
@@ -521,7 +603,7 @@ body {
 }
 
 .tweet-text span {
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .tweet-img {
@@ -546,12 +628,95 @@ body {
   margin-top: 12px;
 }
 
+.grey {
+  color: rgb(113, 118, 123);
+  margin-top: 12px;
+  padding-bottom: 16px;
+  padding-left: 5px;
+}
+
+.grey a {
+  color: rgb(255, 122, 0);
+}
+
+.line {
+  width: 2px;
+  background-color: rgb(51, 54, 57);
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  height: 100%;
+}
+
 .tweet-reactions > div {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.tweet-reactions span {
+  font-size: 14px;
+  padding-left: 12px;
+  color: rgb(113, 118, 123);
+  min-width: 20px;
+}
+
+
+.big.tweet-text {
+  margin-top: 12px;
 }
 
 
 
+.big-tweet-info {
+  border-bottom: 1px solid rgb(47, 51, 54);
+  padding: 16px 4px;
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+}
+.big-tweet-time {
+  border-top: 1px solid rgb(47, 51, 54);
+  border-bottom: 1px solid rgb(47, 51, 54);
+  padding: 16px 4px;
+  font-size: 15px;
+  color: rgb(113, 118, 123);
+}
+
+.big-tweet-info span {
+  margin: 0px 2px;
+  cursor: pointer;
+}
+
+.rt-like {
+  color: rgb(113, 118, 123);
+}
+
+
+.home .retweeted,
+.big-retweeted {
+  display: flex;
+  font-size: 13px;
+  align-items: center;
+  color: rgb(113, 118, 123);
+  gap: 10px;
+  font-weight: 400;
+  cursor: pointer;
+  padding-left: 30px;
+  margin: 5px 0px -2px 12px;
+  word-wrap: break-word;
+}
+
+.home .retweeted img {
+  height: 16px;
+  width: 16px;
+}
+
+.profile-content .retweeted,
+.profile-content .retweeted img {
+  display: none;
+}
 
 .sidebar-wrapper {
   width: 350px;
@@ -827,6 +992,9 @@ body {
   display: flex;
   padding: 4px 16px;
 }
+.modal-content > div  {
+  flex: 1;
+}
 
 .tweet-avatar.form {
   padding-top: 4px;
@@ -1005,7 +1173,7 @@ textarea {
 
 
 
-.profile-editor-div {
+.modal-div {
   position: fixed;
   left: 0;
   top: 0;
@@ -1017,12 +1185,12 @@ textarea {
   z-index: 2;
 }
 
-.profile-editor-div.active {
+.modal-div.active {
   display: flex;
 }
 
 
-.editor {
+.modal {
   height: 650px;
   min-height: 400px;
   max-height: 90vh;
@@ -1035,7 +1203,14 @@ textarea {
   z-index: 5;
 }
 
-.editor-header  {
+.reply.modal {
+  max-width: 600px;
+  height: unset;
+  padding: 4px;
+}
+
+.modal-header,
+.reply-header  {
   min-height: 58px;
   width: 100%;
   padding: 0px 16px;
@@ -1044,12 +1219,21 @@ textarea {
   justify-content: flex-start;
   gap: 32px;
 }
-
-.editor-header > img  {
+.reply-header.hidden {
+  display: none;
+}
+.modal-header > img  {
   cursor: pointer;
 }
 
-.editor-header h2 {
+.reply-header > img  {
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+  filter:invert(1)
+}
+
+.modal-header h2 {
   font-size: 20px;
   line-height: 24px;
   color: rgb(231, 233, 234);
@@ -1058,7 +1242,7 @@ textarea {
   font-family: 'Chirp';
 }
 
-.editor-header button {
+.modal-header button {
   margin-left: auto;
   background-color: rgb(239, 243, 244);
   min-height: 32px;
@@ -1073,7 +1257,7 @@ textarea {
 
 
 
-.editor-body > div  {
+.modal-body > div  {
   padding: 0px 16px;
 }
 
@@ -1107,6 +1291,9 @@ textarea {
   width: auto;
 }
 
+.feed {
+  padding-bottom: 53px;
+}
 
 
 .feed-loading-screen {
@@ -1186,6 +1373,24 @@ input[type="file"] {
 }
 
 
+.account-card-btn {
+  margin-left: auto;
+}
+
+.account-card-btn button {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.account-card .nav-acc-dots {
+  margin-left: 10px;
+}
+
+
+
+
+
+
 
 
 
@@ -1209,7 +1414,7 @@ input[type="file"] {
 
 @media (hover: hover){
     
-  .editor-header button:hover {
+  .modal-header button:hover {
     background-color: rgb(215, 219, 220);
   }
   .profile-nav li:hover{
@@ -1317,7 +1522,7 @@ input[type="file"] {
     margin-bottom: 10px;
   }
   .signup-form input, 
-  .editor-body input, 
+  .modal-body input, 
   .sign-form > input {
     font-size: 14px;
     height: 50px;
@@ -1348,15 +1553,15 @@ input[type="file"] {
   }
 
   .tf-footer-btn button {
-    font-size: 14px;
-    padding: 0px 12px;
+    font-size: 13px;
+    padding: 0px 10px;
   }
   .tf-footer-icons > div {
-    min-height: 32px;
-    min-width: 32px;
+    min-height: 30px;
+    min-width: 30px;
   }
 
-  .editor {
+  .modal {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -1370,16 +1575,13 @@ input[type="file"] {
     height: 100%;
   }
 
-  .home .tf-content {
-    display: none;
-  }
-
+ 
   .home .nav-acc-name {
     display: flex;
   }
 
   .header {
-    height: 123px;
+    height: 136.6px;
   }
 
   .profile-nav li{
@@ -1477,7 +1679,11 @@ input[type="file"] {
 
   .profile-content  {
     min-height: 80vh;
+  }
 
+  .pi-avatar {
+    height: 90.5px;
+    width: 90.5px;
   }
   
 

@@ -13,6 +13,7 @@ function LoginPage({ setNeedLogin }) {
   const [loginPassword, setLoginPassword] = useState('')
   let navigate = useNavigate();
   const { signIn } = useContext(AuthContext)
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -20,7 +21,8 @@ function LoginPage({ setNeedLogin }) {
        await signIn(loginEmail, loginPassword )
         navigate('/')
     } catch (err) {
-        console.log(err.message)
+      console.log(err);
+    
     }
   };
 
@@ -33,6 +35,12 @@ function LoginPage({ setNeedLogin }) {
     <>
     <div className='sign-form'>
         <h1 className='sign-title'>Sign in to Twitter</h1>
+        {error && (
+					<p style={{ color: "red" }}>
+						The email and password you entered did not match our records. Please
+						double-check and try again.
+					</p>
+				)}
         <button className='google-btn'>Sign in with Google</button>
         <button className='apple-btn'>Sign in with Apple</button>
         <div className='sign-line-div'>
@@ -49,6 +57,7 @@ function LoginPage({ setNeedLogin }) {
             <span role='button' onClick={() => setNeedLogin(false)}> Sign up</span>
         </div>
     </div>
+    
     </>
   )
 }

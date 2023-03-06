@@ -4,18 +4,22 @@ import { useParams} from 'react-router-dom';
 import LoadingScreen from './reusable/LoadingScreen';
 import { query, where, onSnapshot } from "firebase/firestore";
 import { Outlet } from 'react-router-dom';
+import { collection } from "firebase/firestore";
+import { db } from '../firebase/index'
 
 function ProfileRoutes() {
 
-const {userAt, userID, usersRef} = useContext(AuthContext)
-
-
-const [userProfile, setUserProfile] = useState(null);
-const [profileID, setProfileID] = useState(null);
+const {userAt, userID} = useContext(AuthContext)
 
 const { urlAt } = useParams();
 
+const [userProfile, setUserProfile] = useState(null);
+const [profileID, setProfileID] = useState(null);
+const usersRef = collection(db, 'users');
 
+
+
+const q = query(usersRef, where("at", "==", urlAt));
 
 useEffect(() => {
     if (userAt === urlAt) {
@@ -23,7 +27,6 @@ useEffect(() => {
         setUserProfile(true);
     } else {
         setUserProfile(false);
-        const q = query(usersRef, where("at", "==", urlAt));
         onSnapshot(q, (querySnapshot) => {
         querySnapshot.docs.forEach((doc) => {
                 if (doc) {
@@ -34,7 +37,7 @@ useEffect(() => {
             });
         });
     }
-}, [urlAt, userID, userAt, usersRef]);
+}, [urlAt, userID, userAt]);
 
 return (
     <div className="">

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, {useState, useContext, useEffect} from 'react'
 import Close from '../../assets/images/close.svg'
 import { AuthContext } from '../../contexts/AuthContext'
@@ -44,7 +45,6 @@ function Editor({isActiveEdit, setEditActive, previewAvatar, setPreviewAvatar, p
 
 
 
-
   const handleSubmit = (e) => {
     e.preventDefault()
     if(currentUser) {
@@ -54,6 +54,7 @@ function Editor({isActiveEdit, setEditActive, previewAvatar, setPreviewAvatar, p
         website: updateWebsite || ""
     });
 
+    
     if (updateAvatar !== userImage) {
       const storagAvatareRef = ref(storage, ("avatars/" + userID + '.png'))
       uploadBytes(storagAvatareRef, updateAvatar)
@@ -66,6 +67,11 @@ function Editor({isActiveEdit, setEditActive, previewAvatar, setPreviewAvatar, p
     if (updateHeader === userHeader && updateAvatar === userImage) {
       setEditActive(false);
     }
+    import("../functions/updateName").then((update) =>
+						update.default(userID, updateName)
+					)
+      
+
     setEditActive(false)
   }}
 
@@ -93,10 +99,10 @@ function Editor({isActiveEdit, setEditActive, previewAvatar, setPreviewAvatar, p
 
   return (
     <>
-    <div className={isActiveEdit ? 'profile-editor-div active' : 'profile-editor-div'}>
+    <div className={isActiveEdit ? 'modal-div active' : 'modal-div'}>
     <div onClick={() => setEditActive(false)}className={isActiveEdit ? 'backdrop active' : 'backdrop' }></div>
-        <div className='editor'>
-            <div className="editor-header ">
+        <div className='modal'>
+            <div className="modal-header ">
                 <img src={Close} className="close-icon" onClick={() => setEditActive(false)} alt='close-img'/>
                 <h2>Edit profile</h2>
                 <button onClick={(e) => handleSubmit(e)}>Save</button>
@@ -113,7 +119,7 @@ function Editor({isActiveEdit, setEditActive, previewAvatar, setPreviewAvatar, p
                     onChange={handleHeaderPicChange}
                   />
                 </div>
-            <div className="editor-body">    
+            <div className="modal-body">    
                 <div className='change-profile-img pi-avatar-edit'>
                   <div className='pi-avatar' style={{backgroundImage: `url(${previewAvatar})`}}>
                     <label className='avatar-input-label' htmlFor="avatar-input">

@@ -3,23 +3,24 @@ import CreateTweet from './reusable/CreateTweet'
 import { AuthContext } from '../contexts/AuthContext';
 import { db} from "../firebase/index";
 import Feed from './reusable/Feed';
-import { collection, onSnapshot, doc, query, orderBy, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import NavProfile from './reusable/NavProfile'
+import Toast from "./reusable/Toast";
+import { useOutletContext } from "react-router-dom";
 
 
 function HomePage() {
-
-  
 
 
     useEffect(() => {
         document.title = 'Home / Twitter';
     }, []);
 
-    const { userID, usersRef } = useContext(AuthContext);
+    const { userID, userFollows  } = useContext(AuthContext);
 
 	const [tweetData, setTweetData] = useState([]);
     const tweetRef = collection(db, 'tweets');
+    const { toast, setToast } = useOutletContext();
 
     useEffect(() => {	
        
@@ -37,12 +38,13 @@ function HomePage() {
     }, [userID]);
 
 
-    
-   
+  
+
   
 
 
   return (
+    <>
     <div className='home'>
         <div className='home-header'>
             <div className='header-title'>
@@ -59,9 +61,15 @@ function HomePage() {
             </div>   
             <NavProfile />
         </div>
-        <CreateTweet />
+        <CreateTweet toast={toast} setToast={setToast} />
         {tweetData.length ? <Feed tweetData={tweetData}/> : <></>}
     </div>
+    {toast ? (
+		<Toast message={toast} />
+		) : (
+             ""
+        )}
+    </>
   )
 }
 
@@ -77,26 +85,3 @@ export default HomePage
 
 
 
-
-/*   
-twts frop people you follow, add argument in
-
- let tempArray = [];
-
-onSnapshot(doc(usersRef, userID), (doc) => {
-            console.log(doc.data().tweets)
-            doc.data().tweets && tempArray.push(...doc.data().tweets);
-            return tempArray;
-        })
-
-
-         onSnapshot(q, (querySnapshot) => {
-            let finalArray = [];
-        querySnapshot.forEach((doc) => {
-            if (tempArray.includes(doc.id) && !doc.data().replyTo) {
-                finalArray.push({ ...doc.data(), id: doc.id });
-            }
-            setTweetData(finalArray);
-          });
-        });
-   */
