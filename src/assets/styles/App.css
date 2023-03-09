@@ -111,6 +111,9 @@ body {
   margin-top: 16px;
 }
 
+.tweet-btn img {
+  display: none;
+}
 
 .notif-icons {
   display: flex;
@@ -527,6 +530,10 @@ body {
   display: none;
 }
 
+.no-hov {
+  opacity: 0.5;
+	pointer-events: none;
+}
 
 
 .tweet-div  {
@@ -594,6 +601,70 @@ body {
   opacity: 0.6;
 }
 
+.delete-tweet {
+  position: absolute;
+  height: 30px;
+  width: 125px;
+  transform: translate(-86%, -80%);
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  box-shadow: rgb(255 255 255 / 20%) 0px 0px 15px, rgb(255 255 255 / 15%) 0px 0px 3px 1px;
+  font-size: 14px;
+}
+.warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: black;
+  z-index: 6;
+  padding: 20px;
+  height: 35%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgb(255 255 255 / 20%) 0px 0px 15px, rgb(255 255 255 / 15%) 0px 0px 3px 1px;
+}
+
+.warning .grey {
+  padding-left: unset;
+}
+.warning-buttons {
+  display: flex;
+  background-color: black;
+  margin-top: auto;
+  justify-content: center;
+
+}
+.warning-buttons button {
+  border-radius: 50px;
+  width: 200px;
+  padding: 10px;
+  max-height: 53px;
+  background-color: black;
+  color: white;
+  border: 1px solid rgb(83, 100, 113);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.warning-buttons :last-child {
+  background-color: rgb(244, 33, 46);
+}
+
+.cover {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(128, 128, 128, 0.5);
+	z-index: 4;
+  backdrop-filter: blur(3px);
+}
+
 .tweet-text {
   width: 100%;
   font-size: 15px;
@@ -609,13 +680,26 @@ body {
 .tweet-img {
   margin-top: 12px;
   margin-bottom: 12px;
+  max-width: 505px;
 }
 
-.tweet-img > div {
+.tweet-img > div{
   width: 100%;
   background-position: center;
   background-size: contain;
-  padding-bottom: 56.25%;
+
+}
+
+.img-close-container img {
+  filter: invert(1);
+  height: 24px;
+  width: 24px;
+  margin: 5px 0px;
+  cursor: pointer;
+}
+
+.preview-image {
+  max-width: 100%;
   border-radius: 16px;
   border: 1px solid rgb(47, 51, 54); 
 }
@@ -676,8 +760,8 @@ body {
   gap: 20px;
   font-size: 14px;
 }
+
 .big-tweet-time {
-  border-top: 1px solid rgb(47, 51, 54);
   border-bottom: 1px solid rgb(47, 51, 54);
   padding: 16px 4px;
   font-size: 15px;
@@ -976,6 +1060,7 @@ body {
 }
 
 
+
 .tweet-form-div {
   min-width: 600px;
   top: 5%;
@@ -986,6 +1071,7 @@ body {
   background: black;
   border-radius: 16px;
   min-height: 314px;
+  z-index: 66;
 }
 
 .tf-content {
@@ -1059,7 +1145,9 @@ textarea {
   padding: 0px 12px;
   border-radius: 50px;
 }
-
+.active-button {
+	background-color: #ff7a00;
+}
 
 .tf-can-reply {
   margin-left: -8px;
@@ -1089,8 +1177,12 @@ textarea {
   display: flex;
   align-items: center;
   margin-top: 12px;
+}
 
-  
+.tf-footer-icons label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .tf-footer-icons > div {
@@ -1105,7 +1197,7 @@ textarea {
 .tf-footer-icons img {
   height: 20px;
   width: 20px;
-
+  cursor: pointer;
 }
 
 .tf-footer-btn {
@@ -1191,7 +1283,6 @@ textarea {
 
 
 .modal {
-  height: 650px;
   min-height: 400px;
   max-height: 90vh;
   min-width: 600px;
@@ -1200,7 +1291,8 @@ textarea {
   display: flex;
   flex-direction: column;
   overflow-x: auto;
-  z-index: 5;
+  z-index: 66;
+  position: absolute;
 }
 
 .reply.modal {
@@ -1573,6 +1665,7 @@ input[type="file"] {
     border-radius: unset;
     overflow-x: hidden;
     height: 100%;
+    z-index: 66;
   }
 
  
@@ -1663,8 +1756,11 @@ input[type="file"] {
   .navigation-div .tweet-btn button {
     height: 56px;
     width: 56px;  
-    font-size: 5px;
+    font-size: 0px;
     box-shadow: rgb(217 217 217 / 20%) 0px 0px 5px, rgb(217 217 217 / 25%) 0px 1px 4px 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
 
@@ -1685,6 +1781,13 @@ input[type="file"] {
     height: 90.5px;
     width: 90.5px;
   }
-  
-
+  .tweet-btn img {
+    display: flex;
+  }
+  .warning-buttons button { 
+    width: 100%;
+  }
+  .tweet-img {
+    max-width: 298px;
+  }
 }

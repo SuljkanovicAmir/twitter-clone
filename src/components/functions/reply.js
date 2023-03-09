@@ -1,13 +1,13 @@
 import { doc, addDoc, collection, updateDoc, getDoc, onSnapshot } from "firebase/firestore"; 
 import { db, storage, auth } from "../../firebase/index";
-
+import { uploadBytes, ref } from 'firebase/storage';
 
 
 async function reply(props) {
 
-    const { tweetID, tweeterID, userName, text, userAt, userID, userTweets } = props;
+    const { tweetID, tweeterID, userName, text, userAt, IMGs, userID, userTweets } = props;
 
-
+    const imgAmount = IMGs.length || 0;
     const tweetRef = collection(db, 'tweets');
     const userRef = doc(db, 'users', userID);
 
@@ -39,8 +39,16 @@ async function reply(props) {
 		retweets: [],
 		likes: [],
 		replies: [],
+        imageCount: imgAmount,
     }).then((newTweet) => {
         
+        for (const [index, img] of IMGs.entries()) { 
+            const storageTweetImgRef = ref(storage, "tweet_pictures/" +  newTweet.id + "/" + index + '.png')
+            uploadBytes(storageTweetImgRef, img).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+              });
+           
+        }
 
             updateDoc(userRef, {tweets: [...userTweets, newTweet.id] });
            
@@ -54,7 +62,6 @@ async function reply(props) {
                 const originalReplies = originalData.replies;
                 const newReplies = [...(originalReplies || []), newTweet.id];
     
-               
     
                 updateDoc(tweetWithIdRef, {replies: newReplies})
     
@@ -65,7 +72,7 @@ async function reply(props) {
             }
           fetchData()
            
-
+          
     });
 
   

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, Suspense} from 'react'
+import React, {useContext, useState, useEffect, Suspense, lazy} from 'react'
 import StatsIcon from '../assets/images/tweet-reactions/stats.svg'
 import RetweetIcon from '../assets/images/tweet-reactions/retweet.svg'
 import RetweetedIcon from '../assets/images/tweet-reactions/retweet-filled.svg'
@@ -19,17 +19,21 @@ import UsersList from './reusable/UsersList'
 import DeadTweet from './reusable/DeadTweet'
 import CreateTweet from './reusable/CreateTweet'
 
+const TweetDropdown = lazy(() => import("./reusable/TweetDropdown"));
+const Cover = lazy(() => import("./reusable/Cover"));
+
 
 function Tweet(props) {
 
 	const [timeSince, setTimeSince] = useState(null);
-  const [retweetedBy, setRetweetedBy] = useState("");
+  	const [retweetedBy, setRetweetedBy] = useState("");
 	const [modal, setModal] = useState("");
 	const [imageLoaded, setImageLoaded] = useState(false);
 	const [reply, setReply] = useState(false);
 	const [originalTweet, setOriginalTweet] = useState(null);
-  const [toast, setToast] = useState("");
-
+  	const [toast, setToast] = useState("");
+	const [dropdown, setDropdown] = useState(false);
+	const [pics, setPics] = useState([]);
 
 
   const location = useLocation();
@@ -61,13 +65,13 @@ function Tweet(props) {
 		AuthContext
 	);
 
-  const liked = likes && likes.includes(userID); 
-  const retweeted = retweets && retweets.includes(userID); 
-	const likeAmount = likes ? likes.length : "";
-  const isRetweet = userRetweets && userRetweets.includes(tweetID);
-	const retweetsAmount = retweets ? retweets.length : "";
-  const repliesAmount = replies ? replies.length : "";
-
+const liked = likes && likes.includes(userID); 
+const retweeted = retweets && retweets.includes(userID); 
+const likeAmount = likes ? likes.length : "";
+const isRetweet = userRetweets && userRetweets.includes(tweetID);
+const retweetsAmount = retweets ? retweets.length : "";
+const repliesAmount = replies ? replies.length : "";
+const followed = userFollows && userFollows.includes(tweeterID); 
 
   useEffect(() => {
         if (time && !big) {
@@ -79,72 +83,152 @@ function Tweet(props) {
         }
       }, [tweeterID, time, big]);
 
-      // if this is a reply, get the original tweet
+	
+	   useEffect(() => {
+        if (big) {
+            setTimeout(() => {
+				setFeedLoaded(true)    
+			   }, 1000)
+		
+        }
+      }, [ big])
+
       useEffect(() => {
         let mounted = true;
         if (mounted && replyTo && !noOriginal && !original) {
-          const tweetRef = collection(db, 'tweets');
-          onSnapshot(doc(tweetRef, replyTo), (doc) => {
+			const tweetRef = collection(db, 'tweets');
+          	onSnapshot(doc(tweetRef, replyTo), (doc) => {
             let data = doc.data();
-  
             if (doc.exists && mounted) {
-            
-              const storageAvatarRef = ref(storage, "avatars/" + data.userID + '.png')
-              getDownloadURL(storageAvatarRef).then((url) => {  
-                setOriginalTweet(
-									<Tweet
-										key={doc.id}
-										tweetID={doc.id}
-										tweeterID={data.userID}
-										name={data.name}
-										at={data.at}
-										time={data.timeStamp}
-										text={data.text}
-										retweets={data.retweets}
-										replyTo={data.replyTo}
-										likes={data.likes}
-										getReplies={false}
-										replies={data.replies}
-										imageCount={data.imageCount}
-										deleteToast={deleteToast}
-										original={true}
-										image={url}
-										replyImageLoad={setImageLoaded}
-									/>
-								);
-               })
-               .catch((e) => {
-                  <Tweet
-                      key={doc.id}
-                      tweetID={doc.id}
-                      tweeterID={data.userID}
-                      name={data.name}
-                      at={data.at}
-                      time={data.timeStamp}
-                      text={data.text}
-                      retweets={data.retweets}
-                      replyTo={data.replyTo}
-                      likes={data.likes}
-                      getReplies={false}
-                      replies={data.replies}
-                      imageCount={data.imageCount}
-                      image={Dots}
-                      deleteToast={deleteToast}
-                      original={true}
-                      replyImageLoad={setImageLoaded}
-                    />
-               });
-              }
-          })
-        } else if (mounted && replyTo && !noOriginal) {
-            if (location.pathname !== "/") {
-              setOriginalTweet(<DeadTweet />);
-            }
-        }
+            	const storageAvatarRef = ref(storage, "avatars/" + data.userID + '.png')
+				getDownloadURL(storageAvatarRef).then((url) => {  
+					setOriginalTweet(
+											<Tweet
+												key={doc.id}
+												tweetID={doc.id}
+												tweeterID={data.userID}
+												name={data.name}
+												at={data.at}
+												time={data.timeStamp}
+												text={data.text}
+												retweets={data.retweets}
+												replyTo={data.replyTo}
+												likes={data.likes}
+												getReplies={false}
+												replies={data.replies}
+												imageCount={data.imageCount}
+												deleteToast={deleteToast}
+												original={true}
+												image={url}
+												replyImageLoad={setImageLoaded}
+											/>
+										);
+					})
+					.catch((e) => {
+						<Tweet
+							key={doc.id}
+							tweetID={doc.id}
+							tweeterID={data.userID}
+							name={data.name}
+							at={data.at}
+							time={data.timeStamp}
+							text={data.text}
+							retweets={data.retweets}
+							replyTo={data.replyTo}
+							likes={data.likes}
+							getReplies={false}
+							replies={data.replies}
+							imageCount={data.imageCount}
+							image={Dots}
+							deleteToast={deleteToast}
+							original={true}
+							replyImageLoad={setImageLoaded}
+							/>
+					});
+              	}
+				 
+        })
+	}
+				
     
         return () => (mounted = false);
          
       },  [big, replyTo, deleteToast, original, noOriginal, location.pathname, tweetID]);
+
+
+	  useEffect(() => {
+		let mounted = true;
+		if (mounted && imageCount) {
+			let tempArray = [];
+			for (let i = 0; i < imageCount; i++) {
+				const storageTweetImgRef = ref(storage, "tweet_pictures/" + tweetID + "/" + i + '.png')
+				getDownloadURL(storageTweetImgRef)
+					// eslint-disable-next-line no-loop-func
+					.then((url) => {
+						const jsx = (
+							<a
+								href={url}
+								target="_blank"
+								rel="noreferrer"
+								className="image-container"
+								onClick={(e) => {
+									e.stopPropagation();
+								}}
+								key={url}
+							>
+								<img
+									src={url}
+									alt="user-submitted-pic"
+									className="preview-image"
+								/>
+							</a>
+						);
+						tempArray.push(jsx);
+						if (mounted && i === imageCount - 1) {
+							setPics(tempArray);
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+						if (err.code === "storage/object-not-found") {
+							setTimeout(() => {
+								const storageTweetImgRef = ref(storage, "tweet_pictures/" + tweetID + "/" + i + '.png')
+								getDownloadURL(storageTweetImgRef)
+								.then((url) => {
+										const jsx = (
+											<a
+												href={url}
+												target="_blank"
+												rel="noreferrer"
+												className="image-container"
+												onClick={(e) => {
+													e.stopPropagation();
+												}}
+												key={url}
+											>
+												<img
+													src={url}
+													alt="user-submitted-pic"
+													className="preview-image"
+												/>
+											</a>
+										);
+										tempArray.push(jsx);
+										if (i === imageCount - 1) {
+											setPics(tempArray);
+	
+										}
+									})
+									.catch((err) => console.log("well eck lmao"));
+							}, 4000);
+						}
+					});
+			}
+		}
+		return () => (mounted = false);
+	}, [imageCount, tweetID]);
+
+
 
 
 useEffect(() => {
@@ -220,6 +304,25 @@ useEffect(() => {
 		}
 	};
 
+  const follow = (e) => {
+		e.stopPropagation();
+		if (userID) {
+			import("./functions/follow").then((follow) =>
+				follow.default(tweeterID, userID, userFollows)
+			);
+		}
+	};
+
+  const unfollow = (e) => {
+		e.stopPropagation();
+		if (userID) {
+			import("./functions/unfollow").then((unfollow) =>
+				unfollow.default(tweeterID, userID, userFollows)
+			);
+		}
+	};
+
+
  // eslint-disable-next-line no-useless-escape
  const urlRe = /^https?:\/\/(?:www\.)*/g;
  const urlText = reactStringReplace(text, urlRe, (match, i) => (
@@ -280,6 +383,12 @@ useEffect(() => {
 	};
 
 
+  const toggleDropdown = (e) => {
+		e.stopPropagation();
+		if (userID) {
+			setDropdown(!dropdown);
+		}
+	};
  
 
   return (
@@ -331,7 +440,23 @@ useEffect(() => {
               : "" 
             }
             <div className="tweet-dots">
-              <img src={Dots} alt="dots" />
+              <img src={Dots} alt="dots"  onClick={(e) => toggleDropdown(e)} />
+              {dropdown && (
+									<Suspense fallback={<FeedLoadingScreen absolute={true} />}>
+										<TweetDropdown
+											unfollow={unfollow}
+											follow={follow}
+											followed={followed}
+											replyTo={replyTo}
+											tweetID={tweetID}
+											userID={userID}
+											userTweets={userTweets}
+											deleteToast={deleteToast}
+											tweeterID={tweeterID}
+											toggle={toggleDropdown}
+										/>
+									</Suspense>
+								)}
             </div>
           </div>
           <div className="tweet-content">
@@ -342,6 +467,22 @@ useEffect(() => {
             </span>
             </div>
             <div className="tweet-img">
+			{imageCount ? (
+							imageCount > 1 ? (
+								<div className={`preview-images ${big ? "pad" : ""}`}>
+									<div className="preview-images-half">
+										{pics.slice(0, Math.round(pics.length / 2))}
+									</div>
+									<div className="preview-images-half">
+										{pics.slice(Math.round(pics.length / 2))}
+									</div>
+								</div>
+							) : (
+								<div className={`preview-images ${big ? "pad" : ""}`}>{pics}</div>
+							)
+						) : (
+							""
+						)}
             </div>
             {big ? (
                <div className="big-tweet-time">{timeSince}</div>
@@ -418,15 +559,18 @@ useEffect(() => {
    
     {reply && (
 						<Suspense fallback={<FeedLoadingScreen />}>
+							<Cover toggle={toggleReply}>
 								<CreateTweet
 									modal={true}
 									replyData={props}
 									replyImage={image}
 									replyTimeSince={timeSince}
 									toggle={toggleReply}
-                  setToast={setToast}
+                  					setToast={setToast}
 								/>
+							</Cover>
 						</Suspense>
+						
 					)}
     {modal ? (
 					<Suspense fallback={<FeedLoadingScreen />}>

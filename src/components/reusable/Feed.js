@@ -1,10 +1,9 @@
 import React, {useState, useEffect, useContext} from 'react'
 import Tweet from '../Tweet'
 import Dots from '../../assets/images/dots.svg'
-import { db, storage } from '../../firebase/index'
+import {  storage } from '../../firebase/index'
 import { ref, getDownloadURL } from 'firebase/storage';
 import { AuthContext } from '../../contexts/AuthContext';
-import Toast from './Toast'
 
 function Feed(props) {
     
@@ -63,6 +62,9 @@ function Feed(props) {
                 
               });
               setUniqueTweets(tweets);
+              setTimeout(() => {
+                setFeedLoaded(true)    
+               }, 1000)
             }
             const check = (a, b) => {
                 if (a.length === b.length) {
@@ -70,12 +72,15 @@ function Feed(props) {
                     makeComponents();
                 }
             };
+            
             if (userID && userImage && tweetData.length && !finalImages.length) {
                 const tweeterIDs = tweetData.map((tweet) => {
                     return tweet.userID;
                 });
                 const uniqueTweeterIDs = [...new Set(tweeterIDs)];
+
                 let tweeterImages = [];
+
                 for (let tweeterID of uniqueTweeterIDs) {
                     if (tweeterID === userID) {
                         tweeterImages.push({ id: tweeterID, image: userImage });

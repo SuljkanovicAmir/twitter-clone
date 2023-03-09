@@ -1,11 +1,13 @@
 /* eslint-disable no-useless-escape */
 import React from 'react'
-import { doc, addDoc, collection, updateDoc } from "firebase/firestore"; 
-import { db, storage, auth } from "../../firebase/index";
+import { doc, addDoc, collection, updateDoc, getDownloadURL } from "firebase/firestore"; 
+import { db, auth, storage } from "../../firebase/index";
+import { uploadBytes, ref } from 'firebase/storage';
 
 function simpleTweet(props) {
 
-    const { userName, text, userAt, userID, userTweets } = props;
+    const { userName, text, userAt, userID, userTweets, IMGs  } = props;
+    const imgAmount = IMGs.length || 0;
 
     const tweetRef = collection(db, 'tweets');
     const userRef = doc(db, 'users', userID);
@@ -32,8 +34,16 @@ function simpleTweet(props) {
         replies: [],
         timeStamp: new Date(),
         retweets: [],
+        imageCount: imgAmount,
     }).then((newTweet) => {
-            console.log(newTweet)
+        for (const [index, img] of IMGs.entries()) { 
+            const storageTweetImgRef = ref(storage, "tweet_pictures/" +  newTweet.id + "/" + index + '.png')
+            uploadBytes(storageTweetImgRef, img).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+              });
+           
+        }
+    
             updateDoc(userRef, {
                 tweets: [...userTweets, newTweet.id] 
             });

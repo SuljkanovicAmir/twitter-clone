@@ -8,6 +8,8 @@ import BookmarksIcon from '../assets/images/bookmarks.svg'
 import ListsIcon from '../assets/images/lists.svg'
 import ProfileIcon from '../assets/images/profile.svg'
 import MoreIcon from '../assets/images/more.svg'
+import TweetIcon from '../assets/images/tweet-form-icons/tweet-icon.svg'
+
 import { signOut } from 'firebase/auth'
 import { auth } from '../firebase/index'
 import { NavLink } from 'react-router-dom'
@@ -129,7 +131,9 @@ function Navigation({toast, setToast}) {
             </li>
           </nav>
           <div className="tweet-btn">
-            <button onClick={() => setActive(true)}>Tweet</button>
+            <button onClick={() => setActive(true)}>Tweet
+            <img src={TweetIcon} alt="notif icon" /></button>
+             
           </div>
           <NavProfile />
         </div>
